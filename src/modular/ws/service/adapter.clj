@@ -5,7 +5,7 @@
    [taoensso.sente  :as sente]
    [modular.encoding.transit :as e]
    [modular.ws.service.id :refer [get-sente-session-uid]]
-   [modular.ws.adapter.jetty :as jetty]))
+   [modular.ws.service.adapter.jetty :as jetty]))
 
 (defn get-adapter [server-type]
   (case server-type
