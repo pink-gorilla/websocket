@@ -1,45 +1,42 @@
 (ns modular.ws.core
   (:require
    [taoensso.timbre :as log :refer [error info warn]]
-   [modular.ws.adapter :refer [ws-init! start-router!]]
-   [modular.ws.handler :refer [add-ws-handler]]
-   [modular.ws.ws :as ws]))
+   [modular.ws.ws :as ws]
+   [modular.ws.service :as service]))
 
-(def c (atom nil))
+(defonce state-a (atom nil))
 
-(def watcher-cbs (atom []))
+(defn start-websocket-server [server-type sente-debug?]
+  (let [state (service/start-websocket-server server-type sente-debug?)]
+    (reset! state-a state)
+    state))
 
-(defn- watch-conn-start [conn]
-  (let [{:keys [connected-uids]} conn]
-    (add-watch connected-uids :connected-uids
-               (fn [_ _ old new]
-                 (when (not= old new)
-                   (doall (for [cb @watcher-cbs]
-                            (cb old new))))))))
+(defn stop-websocket-server [state]
+  (service/stop-websocket-server state)
+  (reset! state-a nil)
+  nil)
+
 
 (defn watch-conn [cb]
-  (swap! watcher-cbs conj cb))
-
-(defn- log-conn-chg [old new]
-  (info "conn chg: old:" old "new: " new))
-
-(defn init-ws! [server-type]
-  (let [conn (ws-init! server-type)]
-    (reset! c conn)
-    (watch-conn log-conn-chg)
-    (watch-conn-start conn)
-    (start-router! conn)
-    (add-ws-handler conn)))
+  (swap! (:watch @state-a) conj cb))
 
 (defn send! [uid data]
-  (if @c
-    (ws/send! @c uid data)
+  (if-let [conn (:conn @state-a)] 
+    (ws/send! conn uid data)
     (error "ws/send - not setup. data: " data)))
 
 (defn send-all! [data]
-  (if @c
-    (ws/send-all! @c data)
+   (if-let [conn (:conn @state-a)] 
+    (ws/send-all! conn data)
     (error "ws/send-all - not setup. data: " data)))
+
+(defn connected-uids []
+  (let [conn (:conn @state-a)
+        {:keys [connected-uids]} conn
+        uids (:any @connected-uids)]
+    uids))
+
+
 
 (defn send-response [{:as ev-msg :keys [id ?data ring-req ?reply-fn uid send-fn]}
                      msg-type response]
@@ -59,10 +56,7 @@
       :else (error "Cannot send ws-response: neither ?reply-fn nor uid was set!"))
     (error "Can not send ws-response - msg-type and response have to be set, msg-type:" msg-type "response: " response)))
 
-(defn connected-uids []
-  (let [{:keys [connected-uids]} @c
-        uids (:any @connected-uids)]
-    uids))
+
 
 (comment
   ;(println "clients: " @connected-uids)

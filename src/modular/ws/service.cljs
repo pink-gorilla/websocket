@@ -1,4 +1,4 @@
-(ns modular.ws.adapter
+(ns modular.ws.service
   (:require
    [taoensso.timbre :as timbre :refer-macros [tracef debug debugf infof warn warnf errorf trace]]
    [taoensso.sente :as sente :refer [cb-success?]]
@@ -31,9 +31,6 @@
 
 ; router
 
-(defonce router_ (atom nil))
-
-(defn  stop-router! [] (when-let [stop-f @router_] (stop-f)))
 
 (defn sente-csrf-warning []
   (if ?csrf-token
@@ -42,10 +39,20 @@
 
 (defn start-router! [conn]
   (let [{:keys [ch-chsk]} conn]
-    (stop-router!)
     (sente-csrf-warning)
-    (reset! router_
-            (sente/start-client-chsk-router! ch-chsk event-msg-handler))))
+    (sente/start-client-chsk-router! ch-chsk event-msg-handler)))
+
+(defn  stop-router! [stop-f] 
+  (when stop-f 
+    (stop-f)))
 
 
+(defn start-websocket-client! [path port]
+  (let [conn (ws-init! path port)
+        router (start-router! conn)]
+    {:conn conn
+     :router router}))
+
+(defn stop-websocket-client! [{:keys [conn router] :as state}]
+  (stop-router! router))
 

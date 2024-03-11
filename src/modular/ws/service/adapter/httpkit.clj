@@ -1,4 +1,4 @@
-(ns modular.ws.adapter.httpkit
+(ns modular.ws.service.adapter.httpkit
   (:require
    [taoensso.timbre :as log :refer [debug info infof]]
    [taoensso.sente.server-adapters.http-kit]))

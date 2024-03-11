@@ -1,4 +1,4 @@
-(ns modular.ws.id)
+(ns modular.ws.service.id)
 
 (defn unique-id
   "Get a unique id for a session."

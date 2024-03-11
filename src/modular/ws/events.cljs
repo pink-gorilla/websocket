@@ -3,7 +3,7 @@
    [taoensso.timbre :refer-macros [debug info warn error]]
    [cemerick.url :as url]
    [re-frame.core :as rf]
-   [modular.ws.core :refer [init-ws!]]))
+   [modular.ws.core :refer [start-websocket-client!]]))
 
 (defn application-url
   "gets the current url, as a map"
@@ -34,7 +34,7 @@
  (fn [db [_]]
    (let [port (changed-port db)]
      (warn "ws connect to port (nil=unchanged): " port)
-     (init-ws! "/api/chsk" port)
+     (start-websocket-client! "/api/chsk" port)
      db)))
 
 #_[{:type :auto

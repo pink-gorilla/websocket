@@ -1,4 +1,4 @@
-(ns modular.ws.adapter.undertow
+(ns modular.ws.service.adapter.undertow
   (:require
    [taoensso.timbre :as log :refer [debug info infof]]
    [taoensso.sente.server-adapters.undertow]))

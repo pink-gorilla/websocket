@@ -1,4 +1,4 @@
-(ns modular.ws.adapter.jetty
+(ns modular.ws.service.adapter.jetty
   (:require
    [taoensso.timbre :as log :refer [debug info infof]]
    [taoensso.sente.server-adapters.jetty9]))

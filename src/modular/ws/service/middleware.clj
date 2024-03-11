@@ -1,4 +1,4 @@
-(ns modular.ws.middleware
+(ns modular.ws.service.middleware
   "a middleware takes a handler, and wraps a middleware around it.
    It is handler transformation, not routing related."
   (:require

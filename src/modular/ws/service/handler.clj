@@ -1,11 +1,10 @@
-(ns modular.ws.handler
+(ns modular.ws.service.handler
   (:require
    [taoensso.timbre :as log :refer [debug debugf info infof]]
    [cheshire.core :as json]
    [ring.middleware.anti-forgery :refer [*anti-forgery-token*]]
-   [modular.webserver.handler.registry :refer [add-ring-handler]]
-   [modular.ws.id :refer [get-sente-session-uid]]
-   [modular.ws.middleware :refer [wrap-ws]]))
+   [modular.ws.service.id :refer [get-sente-session-uid]]
+   [modular.ws.service.middleware :refer [wrap-ws]]))
 
 ; CSRF TOKEN
 
@@ -42,13 +41,7 @@
     ;(info "ws csrf: " (get-in req [:session :ring.middleware.anti-forgery/anti-forgery-token]))
     res))
 
-(def ws-token-handler-raw-wrapped (wrap-ws ws-token-handler-raw))
-;(def ws-handshake-handler-wrapped (wrap-ws ws-handshake-handler))
-;(def ws-ajax-post-handler-wrapped (wrap-ws ws-ajax-post-handler))
-
-
-(defn add-ws-handler [conn]
-  (add-ring-handler :ws/token (wrap-ws ws-token-handler-raw))
-  (add-ring-handler :ws/chsk-get (wrap-ws (partial ws-handshake-handler conn)))
-  (add-ring-handler :ws/chsk-post (wrap-ws (partial ws-ajax-post-handler conn))))
-
+(defn create-bidi-routes [conn]
+  {"token" (wrap-ws ws-token-handler-raw)
+   "chsk" {:get (wrap-ws (partial ws-handshake-handler conn))
+           :post (wrap-ws (partial ws-ajax-post-handler conn))}})
