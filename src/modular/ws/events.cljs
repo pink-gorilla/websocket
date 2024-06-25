@@ -75,6 +75,6 @@
 (rf/reg-event-db
  :ws/unknown
  (fn [db [_ data]]
-   (error "ws server does not know how to handle events of type: " data " you need to add code to clj side of your app")
+   (error "ws server not setup to handle events of type: " data)
    db))
 
