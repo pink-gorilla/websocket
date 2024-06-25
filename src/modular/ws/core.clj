@@ -1,50 +1,54 @@
 (ns modular.ws.core
   (:require
-   [taoensso.timbre :as log :refer [error info warn]]
-   [modular.ws.ws :as ws]
-   [modular.ws.service :as service]))
+   [taoensso.timbre :as log :refer [debugf info warn error]]
+   [taoensso.sente  :as sente]
+   [modular.ws.service.adapter :as adapter]
+   [modular.ws.service.handler :as handler]
+   [modular.ws.service.router :as router]
+   [modular.ws.service.watch :as watch]))
 
-(defonce state-a (atom nil))
+;; SERVICE START/STOP
 
 (defn start-websocket-server [server-type sente-debug?]
-  (let [state (service/start-websocket-server server-type sente-debug?)]
-    (reset! state-a state)
-    state))
+  (let [conn (adapter/ws-init! server-type)
+        bidi-routes (handler/create-bidi-routes conn)
+        router (router/start-router! conn)
+        watch (watch/watch-conn-start conn)]
+    (when sente-debug?
+      (reset! sente/debug-mode?_ true))
+    {:conn conn
+     :bidi-routes bidi-routes
+     :router router
+     :watch watch}))
 
-(defn stop-websocket-server [state]
-  (service/stop-websocket-server state)
-  (reset! state-a nil)
-  nil)
+(defn stop-websocket-server [{:keys [conn bidi-routes router watch] :as this}]
+  (router/stop-router! router))
 
+;; SEND 
 
-(defn watch-conn [cb]
-  (swap! (:watch @state-a) conj cb))
+(defn send! [this uid data]
+  (let [{:keys [chsk-send!]} this]
+    (when-not (= uid :sente/nil-uid)
+      (chsk-send! uid data))))
 
-(defn send! [uid data]
-  (if-let [conn (:conn @state-a)] 
-    (ws/send! conn uid data)
-    (error "ws/send - not setup. data: " data)))
+(defn send-all! [this data]
+  (let [{:keys [connected-uids]} this
+        uids (:any @connected-uids)
+        nr (count uids)]
+    (when (> nr 0)
+      (debugf "Broadcasting event type: %s to %s clients" (first data) nr)
+      (doseq [uid uids]
+        (send! this uid data)))))
 
-(defn send-all! [data]
-   (if-let [conn (:conn @state-a)] 
-    (ws/send-all! conn data)
-    (error "ws/send-all - not setup. data: " data)))
-
-(defn connected-uids []
-  (let [conn (:conn @state-a)
-        {:keys [connected-uids]} conn
-        uids (:any @connected-uids)]
-    uids))
-
-
+;; REPLY
 
 (defn send-response [{:as ev-msg :keys [id ?data ring-req ?reply-fn uid send-fn]}
                      msg-type response]
   ;(let [session (:session ring-req)
         ;uid (:uid session)
    ;     ]
-   ; (when (nil? ?reply-fn)
-   ;   (warn "reply-fn is nil. the client did chose to use messenging communication istead of req-res communication."))
+  ;(when (nil? ?reply-fn)
+   ; (warn "reply-fn is nil. the client did chose to use messenging communication istead of req-res communication."))
     ;(warn "ws/session: " session)
     ;(if (nil? uid)
     ;  (warn "ws request uid is nil. ring-session not configured correctly.")
@@ -52,15 +56,20 @@
   (if (and msg-type response)
     (cond
       ?reply-fn (?reply-fn [msg-type response])
-      uid (send! uid [msg-type response])
+      uid (send-fn uid [msg-type response])
       :else (error "Cannot send ws-response: neither ?reply-fn nor uid was set!"))
     (error "Can not send ws-response - msg-type and response have to be set, msg-type:" msg-type "response: " response)))
 
+;; WATCH
+
+(defn connected-uids [this]
+  (let [conn (:conn this)
+        {:keys [connected-uids]} conn
+        uids (:any @connected-uids)]
+    uids))
 
 
-(comment
-  ;(println "clients: " @connected-uids)
-  (send-all! [:demo/broadcast {:a 13}])
 
-  ;
-  )
+
+
+

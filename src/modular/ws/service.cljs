@@ -31,7 +31,6 @@
 
 ; router
 
-
 (defn sente-csrf-warning []
   (if ?csrf-token
     (debug "CSRF token detected in HTML, great!")
@@ -42,10 +41,9 @@
     (sente-csrf-warning)
     (sente/start-client-chsk-router! ch-chsk event-msg-handler)))
 
-(defn  stop-router! [stop-f] 
-  (when stop-f 
+(defn  stop-router! [stop-f]
+  (when stop-f
     (stop-f)))
-
 
 (defn start-websocket-client! [path port]
   (let [conn (ws-init! path port)

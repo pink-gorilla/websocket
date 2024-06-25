@@ -1,6 +1,5 @@
 (ns modular.ws.service.adapter
   (:require
-   [taoensso.timbre :as log :refer [debug info infof]]
    [taoensso.sente.packers.transit :as sente-transit]
    [taoensso.sente  :as sente]
    [modular.encoding.transit :as e]

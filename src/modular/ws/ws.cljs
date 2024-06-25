@@ -13,14 +13,14 @@
     (error "ws reply/dispatch to reframe failed. not a vector: " cb-reply)))
 
 (defn send
-  ([conn data]
-   (let [{:keys [chsk-send!]} conn]
+  ([this data]
+   (let [{:keys [chsk-send!]} this]
      (debug "chsk-send!")
      (if chsk-send!
        (chsk-send! data)  ; sente send callbacks dont work with reframe
        (error "chsk-send! not defined! cannot send: " data))))
-  ([conn data cb timeout]
-   (let [{:keys [chsk-send!]} conn]
+  ([this data cb timeout]
+   (let [{:keys [chsk-send!]} this]
      (debug "chsk-send!")
      (if chsk-send!
        (chsk-send! data timeout cb)  ; sente send callbacks dont work with reframe

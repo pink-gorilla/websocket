@@ -1,6 +1,6 @@
 (ns modular.ws.service.handler
   (:require
-   [taoensso.timbre :as log :refer [debug debugf info infof]]
+   [taoensso.timbre :refer [debug debugf info infof]]
    [cheshire.core :as json]
    [ring.middleware.anti-forgery :refer [*anti-forgery-token*]]
    [modular.ws.service.id :refer [get-sente-session-uid]]

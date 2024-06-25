@@ -3,7 +3,6 @@
    It is handler transformation, not routing related."
   (:require
    [clojure.string]
-   [taoensso.timbre :refer [debug info error]]
    ;[ring.util.response :refer [response]]
    [ring.middleware.gzip :refer [wrap-gzip]]
    ;[ring.middleware.anti-forgery :refer [wrap-anti-forgery]]

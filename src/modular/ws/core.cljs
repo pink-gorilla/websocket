@@ -17,7 +17,6 @@
   (reset! state nil)
   nil)
 
-
 (defn send!
   ([data]
    (when data
