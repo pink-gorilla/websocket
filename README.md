@@ -8,7 +8,6 @@ Core functions
 
 depends on
 - modular .. encoding (websocket)
-- permission
 - webserver
 
 
