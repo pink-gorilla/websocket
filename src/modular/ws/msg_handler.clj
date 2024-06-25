@@ -48,7 +48,7 @@
   [{:keys [event id ?data ring-req ?reply-fn send-fn] :as req}]
   (let [session (:session ring-req)
         uid (:uid session)]
-    (errorf "ws event of unknown type. Please implement (-event-handler %s) event: %s" id event)
+    (errorf "received websocket message of unknown type: %s event: %s" id event)
     (send-response req :ws/unknown event)))
 
 (defn event-msg-handler [{:keys [client-id id event ?data uid] :as req}]
