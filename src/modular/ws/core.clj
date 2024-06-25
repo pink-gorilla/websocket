@@ -26,30 +26,19 @@
 
 ;; SEND 
 
-(defn send! [this uid data]
-  (let [{:keys [chsk-send!]} this]
+(defn send! [{:keys [conn] :as _this} uid data]
+  (let [{:keys [chsk-send!]} conn]
     (when-not (= uid :sente/nil-uid)
       (chsk-send! uid data))))
 
+(defn connected-uids [{:keys [conn]}]
+  (let [{:keys [connected-uids]} conn]
+    (:any @connected-uids)))
+
 (defn send-all! [this data]
-  (let [{:keys [connected-uids]} this
-        uids (:any @connected-uids)
+  (let [uids (connected-uids this)
         nr (count uids)]
     (when (> nr 0)
       (debugf "Broadcasting event type: %s to %s clients" (first data) nr)
       (doseq [uid uids]
         (send! this uid data)))))
-
-;; WATCH
-
-(defn connected-uids [this]
-  (let [conn (:conn this)
-        {:keys [connected-uids]} conn
-        uids (:any @connected-uids)]
-    uids))
-
-
-
-
-
-
