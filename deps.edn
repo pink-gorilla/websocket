@@ -4,7 +4,7 @@
         ring/ring-anti-forgery {:mvn/version "1.3.0"}
         ;com.taoensso/encore {:mvn/version  #_"3.21.0" "3.112.0"} ; sente brings an older version
         com.taoensso/sente {:mvn/version  "1.17.0" #_"1.16.2"} ; later versions dont support jetty anymore
-        org.pinkgorilla/modular {:mvn/version "0.2.56"} ; encoding
+        org.pinkgorilla/modular {:mvn/version "0.2.60"} ; encoding
         org.pinkgorilla/webserver {:mvn/version "0.0.12"} ; middleware
         }
 
