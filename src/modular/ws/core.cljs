@@ -1,6 +1,6 @@
 (ns modular.ws.core
   (:require
-   [taoensso.timbre :refer-macros [debug info error]]
+   [taoensso.timbre :refer-macros [info error]]
    [re-frame.core :as rf]
    [modular.ws.service :as service]
    [modular.ws.ws :as ws]))
@@ -45,3 +45,10 @@
          (send! data cb timeout))
      (error ":ws/send bad format: " v))
    db))
+
+; todo: remove :ws/send
+; 59 goldly/src-unused/system/goldly/component/ui.cljs
+; 11 goldly/src-unused/system/goldly/notebook_loader/clj_load.cljs
+; 15 devtools/devtools/src/goldly/devtools/websocket.cljs
+; 108 oauth2/src/token/identity/dialog.cljs
+

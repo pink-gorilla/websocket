@@ -1,15 +1,15 @@
 (ns modular.ws.msg-handler
   (:require
-   [taoensso.timbre :refer [tracef debug debugf info infof warn warnf error errorf]]))
+   [taoensso.timbre :refer [debugf  infof   error errorf]]))
 
-(defn ws-reply [{:keys [event id ?data ring-req ?reply-fn send-fn] :as req}
+(defn ws-reply [{:keys [_event _id _?data _ring-req ?reply-fn _send-fn] :as _req}
                 res]
   (when ?reply-fn
     (?reply-fn res)))
 
 ;; REPLY
 
-(defn send-response [{:as ev-msg :keys [id ?data ring-req ?reply-fn uid send-fn]}
+(defn send-response [{:as _msg :keys [_id _?data _ring-req ?reply-fn uid send-fn]}
                      msg-type response]
   ;(let [session (:session ring-req)
         ;uid (:uid session)
@@ -27,38 +27,47 @@
       :else (error "Cannot send ws-response: neither ?reply-fn nor uid was set!"))
     (error "Can not send ws-response - msg-type and response have to be set, msg-type:" msg-type "response: " response)))
 
-
-
-
 (defmulti -event-msg-handler :id)
 
 (defmethod -event-msg-handler :chsk/uidport-open
-  [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
+  [{:as _msg :keys [event _id _?data _ring-req _?reply-fn _send-fn]}]
   (infof ":chsk/uidport-open: %s" event))
 
 (defmethod -event-msg-handler :chsk/uidport-close
-  [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
+  [{:as _msg :keys [event _id _?data _ring-req _?reply-fn _send-fn]}]
   (infof ":chsk/uidport-close: %s" event))
 
 (defmethod -event-msg-handler :chsk/ws-ping
-  [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
-  (debugf ":chsk/ws-ping: %s" event))
+  [{:as _msg :keys [event _id _?data _ring-req ?reply-fn _send-fn]}]
+  (infof ":chsk/ws-ping: %s" event)
+  (when ?reply-fn
+    (?reply-fn {:unmatched-event-as-echoed-from-server event})))
+
+(defmethod -event-msg-handler :chsk/ws-pong
+  [{:as _msg :keys [event _id _?data _ring-req ?reply-fn _send-fn]}]
+  (infof ":chsk/ws-pong: %s" event)
+  (when ?reply-fn
+    (?reply-fn {:unmatched-event-as-echoed-from-server event})))
+
+(defmethod -event-msg-handler :chsk/bad-package
+  [{:as _msg :keys [event _id _?data _ring-req _?reply-fn _send-fn]}]
+  (infof ":chsk/bad-package: %s" event))
+
+(defmethod -event-msg-handler :chsk/bad-event
+  [{:as _msg :keys [event _id _?data _ring-req _?reply-fn _send-fn]}]
+  (infof ":chsk/bad-event: %s" event))
 
 (defmethod -event-msg-handler :default
-  [{:keys [event id ?data ring-req ?reply-fn send-fn] :as req}]
+  [{:keys [event id _?data ring-req _?reply-fn _send-fn] :as msg}]
   (let [session (:session ring-req)
-        uid (:uid session)]
+        _uid (:uid session)]
     (errorf "received websocket message of unknown type: %s event: %s" id event)
-    (send-response req :ws/unknown event)))
+    (send-response msg :ws/unknown event)))
 
-(defn event-msg-handler [{:keys [client-id id event ?data uid] :as req}]
+(defn event-msg-handler [{:keys [_client-id id event ?data _uid] :as msg}]
   (debugf "ws rcvd: evt: %s id: %s data: %s" event id ?data)
-  (when req
-    (let [msg-type (first event)]
-      ;(if (is-authorized? msg-type uid)
-      (-event-msg-handler req)
-      ;(send-reject-response req msg-type))
-      )))
+  (when msg
+    (-event-msg-handler msg)))
 
 ; {:client-id "591b690d-5633-48c3-884d-348bbcf5c9ca"
 ; :uid "3c8e0a40-356c-4426-9391-1445140ff509"

@@ -1,6 +1,6 @@
 (ns modular.ws.ws
   (:require
-   [taoensso.timbre :as timbre :refer-macros [debug debugf info error]]
+   [taoensso.timbre :as timbre :refer-macros [debug debugf error]]
    [re-frame.core :as rf]))
 
 (defn- cb-dispatch-to-reframe

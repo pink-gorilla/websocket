@@ -15,7 +15,7 @@
 
 ; WEBSOCKET
 
-(defn ws-token-handler-raw [req]
+(defn ws-token-handler-raw [_req]
   (let [token {:csrf-token (get-csrf-token)}]
     (info "sending csrf token: " token)
     {:status 200

@@ -1,7 +1,7 @@
 (ns modular.ws.service
   (:require
-   [taoensso.timbre :as timbre :refer-macros [tracef debug debugf infof warn warnf errorf trace]]
-   [taoensso.sente :as sente :refer [cb-success?]]
+   [taoensso.timbre :as timbre :refer-macros [debug   warn]]
+   [taoensso.sente :as sente]
    [taoensso.sente.packers.transit :as sente-transit] ;; Optional, for Transit encoding
    [modular.encoding.transit :as e]
    [modular.ws.msg-handler :refer [event-msg-handler]]))
@@ -16,6 +16,8 @@
   (debug "connecting sente websocket.. " path port)
   (let [packer (sente-transit/get-transit-packer :json e/encode e/decode)
         opts {:type :auto  ; :ajax
+              :ws-kalive-ms 7000
+              :ws-ping-timeout-ms 30000
               :packer packer}
         opts (if port
                (assoc opts :port port)
@@ -51,6 +53,6 @@
     {:conn conn
      :router router}))
 
-(defn stop-websocket-client! [{:keys [conn router] :as state}]
+(defn stop-websocket-client! [{:keys [_conn router] :as _state}]
   (stop-router! router))
 

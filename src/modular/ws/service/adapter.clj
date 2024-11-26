@@ -3,18 +3,15 @@
    [taoensso.sente.packers.transit :as sente-transit]
    [taoensso.sente  :as sente]
    [modular.encoding.transit :as e]
-   [modular.ws.service.id :refer [get-sente-session-uid]]
-   [modular.ws.service.adapter.jetty :as jetty]))
+   [modular.ws.service.id :refer [get-sente-session-uid]]))
 
 (defn get-adapter [server-type]
-  (case server-type
-    :undertow (let [get-sch-adapter (requiring-resolve 'modular.ws.service.adapter.undertow/get-sch-adapter)]
-                (get-sch-adapter))
-    :jetty (jetty/get-sch-adapter)
-    :httpkit (let [get-sch-adapter (requiring-resolve 'modular.ws.service.adapter.httpkit/get-sch-adapter)]
-               (get-sch-adapter))
-    ;
-    ))
+  (let [s (case server-type
+            :untertow 'taoensso.sente.server-adapters.community.undertow/get-sch-adapter
+            :jetty 'taoensso.sente.server-adapters.community.jetty/get-sch-adapter
+            :httpkit 'taoensso.sente.server-adapters.http-kit/get-sch-adapter)
+        get-sch-adapter (requiring-resolve s)]
+    get-sch-adapter))
 
 (defn ws-init! [server-type]
   (let [get-sch-adapter (get-adapter server-type)
@@ -22,6 +19,8 @@
         chsk-server (sente/make-channel-socket-server!
                      (get-sch-adapter)
                      {:packer packer
+                      :ws-kalive-ms 15000
+                      :ws-ping-timeout-ms 50000
                       :csrf-token-fn nil ; awb99; disable CSRF checking.
                       :user-id-fn get-sente-session-uid})
         {:keys [ch-recv send-fn connected-uids

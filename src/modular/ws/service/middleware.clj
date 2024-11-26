@@ -1,6 +1,4 @@
 (ns modular.ws.service.middleware
-  "a middleware takes a handler, and wraps a middleware around it.
-   It is handler transformation, not routing related."
   (:require
    [clojure.string]
    ;[ring.util.response :refer [response]]
@@ -8,10 +6,9 @@
    ;[ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
    [ring.middleware.keyword-params :refer [wrap-keyword-params]]
    [ring.middleware.params :refer [wrap-params]]
-   [ring.middleware.defaults :refer [wrap-defaults site-defaults api-defaults]]
+   [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
    [ring.middleware.session :refer [wrap-session]]
   ; [muuntaja.middleware :refer [wrap-format]] ; 30x faster than ring.middleware.format
-  ; [ring.middleware.json :refer [wrap-json-response]]
    [modular.webserver.middleware.api :as api]))
 
 #_(defn wrap-formats2 [handler]

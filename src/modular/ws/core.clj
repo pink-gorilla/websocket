@@ -1,7 +1,6 @@
 (ns modular.ws.core
   (:require
-   [taoensso.timbre :as log :refer [debugf info warn error]]
-   [taoensso.sente  :as sente]
+   [taoensso.timbre :as log :refer [debugf]]
    [modular.ws.service.adapter :as adapter]
    [modular.ws.service.handler :as handler]
    [modular.ws.service.router :as router]
@@ -9,19 +8,17 @@
 
 ;; SERVICE START/STOP
 
-(defn start-websocket-server [server-type sente-debug?]
+(defn start-websocket-server [server-type]
   (let [conn (adapter/ws-init! server-type)
         bidi-routes (handler/create-bidi-routes conn)
         router (router/start-router! conn)
         watch (watch/watch-conn-start conn)]
-    (when sente-debug?
-      (reset! sente/debug-mode?_ true))
     {:conn conn
      :bidi-routes bidi-routes
      :router router
      :watch watch}))
 
-(defn stop-websocket-server [{:keys [conn bidi-routes router watch] :as this}]
+(defn stop-websocket-server [{:keys [_conn _bidi-routes router _watch] :as _this}]
   (router/stop-router! router))
 
 ;; SEND 

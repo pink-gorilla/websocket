@@ -1,9 +1,11 @@
-(ns modular.ws.service.id)
+(ns modular.ws.service.id
+  (:require
+   [nano-id.core :refer [nano-id]]))
 
 (defn unique-id
   "Get a unique id for a session."
   []
-  (str (java.util.UUID/randomUUID)))
+  (nano-id 8))
 
 (defn session-uid
   "Get session uuid from a request."
@@ -13,7 +15,7 @@
 (defn get-sente-session-uid
   "Get session uuid from a request."
   [req]
-  (or (get-in req [:session :uid])
+  (or (session-uid req)
       (unique-id)))
 
 (defn sente-session-with-uid [req]
