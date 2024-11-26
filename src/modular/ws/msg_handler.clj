@@ -39,13 +39,13 @@
 
 (defmethod -event-msg-handler :chsk/ws-ping
   [{:as _msg :keys [event _id _?data _ring-req ?reply-fn _send-fn]}]
-  (infof ":chsk/ws-ping: %s" event)
+  (debugf ":chsk/ws-ping: %s" event)
   (when ?reply-fn
     (?reply-fn {:unmatched-event-as-echoed-from-server event})))
 
 (defmethod -event-msg-handler :chsk/ws-pong
   [{:as _msg :keys [event _id _?data _ring-req ?reply-fn _send-fn]}]
-  (infof ":chsk/ws-pong: %s" event)
+  (debugf ":chsk/ws-pong: %s" event)
   (when ?reply-fn
     (?reply-fn {:unmatched-event-as-echoed-from-server event})))
 
