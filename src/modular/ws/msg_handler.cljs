@@ -37,3 +37,8 @@
   [{:keys [id ?data event] :as req}]
   (debugf "ws rcvd: evt: %s id: %s data: %s" event id ?data)
   (-event-msg-handler req))
+
+(defn create-msg-handler [id fun]
+  (defmethod -event-msg-handler id
+    [msg]
+    (fun msg)))
