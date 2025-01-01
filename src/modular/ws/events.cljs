@@ -10,6 +10,9 @@
    (when (:first-open? new-state-map)
      (info "ws open (first-time): " new-state-map)
      (rf/dispatch [:ws/open-first new-state-map]))
+   (when (:open? new-state-map)
+     (info "ws connected: " new-state-map)
+     (rf/dispatch [:ws/connected new-state-map]))
    (assoc db :ws new-state-map)))
 
 (rf/reg-sub
