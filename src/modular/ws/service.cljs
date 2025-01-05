@@ -12,13 +12,15 @@
   (when-let [el (.getElementById js/document "sente-csrf-token")]
     (.getAttribute el "data-csrf-token")))
 
-(defn ws-init! [path port]
-  (debug "connecting sente websocket.. " path port)
+(defn ws-init! [protocol path port]
+  (debug "connecting sente websocket.. " protocol path port)
   (let [packer (sente-transit/get-transit-packer :json e/encode e/decode)
         opts {:type :auto  ; :ajax
               :ws-kalive-ms 7000
               :ws-ping-timeout-ms 30000
-              :packer packer}
+              :packer packer
+              :protocol protocol
+              }
         opts (if port
                (assoc opts :port port)
                opts)
@@ -47,8 +49,8 @@
   (when stop-f
     (stop-f)))
 
-(defn start-websocket-client! [path port]
-  (let [conn (ws-init! path port)
+(defn start-websocket-client! [protocol path port]
+  (let [conn (ws-init! protocol path port)
         router (start-router! conn)]
     {:conn conn
      :router router}))

@@ -7,8 +7,8 @@
 
 (defonce state (atom nil))
 
-(defn start-websocket-client! [path port]
-  (let [s (service/start-websocket-client! path port)]
+(defn start-websocket-client! [protocol path port]
+  (let [s (service/start-websocket-client! protocol path port)]
     (reset! state s)
     s))
 
