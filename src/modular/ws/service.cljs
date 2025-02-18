@@ -19,8 +19,7 @@
               :ws-kalive-ms 7000
               :ws-ping-timeout-ms 30000
               :packer packer
-              :protocol protocol
-              }
+              :protocol protocol}
         opts (if port
                (assoc opts :port port)
                opts)

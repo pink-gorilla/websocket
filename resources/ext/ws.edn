@@ -2,10 +2,17 @@
  ; build
  :lazy false
  :cljs-namespace [modular.ws.core
-                  modular.ws.msg-handler]
+                  modular.ws.msg-handler
+                  modular.ws.wsconfig
+                  ]
  :cljs-ns-bindings {'modular.ws.core {'send! modular.ws.core/send!
                                       'start-websocket-client! modular.ws.core/start-websocket-client!}
                     'modular.ws.msg-handler {'-event-msg-handler modular.ws.msg-handler/-event-msg-handler
                                              'create-msg-handler modular.ws.msg-handler/create-msg-handler}
-                    
-                    }}
+                    'modular.ws.wsconfig {'start-ws-service modular.ws.wsconfig/start-ws-service}
+                    }
+ ; runtime
+ :cljs-service {:config-fn modular.ws.wsconfig/config-ws
+                :start-fn modular.ws.wsconfig/start-ws-service}
+ 
+ }
