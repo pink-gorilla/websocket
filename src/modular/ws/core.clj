@@ -2,7 +2,6 @@
   (:require
    [taoensso.timbre :as log :refer [debugf]]
    [modular.ws.service.adapter :as adapter]
-   [modular.ws.service.handler :as handler]
    [modular.ws.service.router :as router]
    [modular.ws.service.watch :as watch]))
 
@@ -10,11 +9,9 @@
 
 (defn start-websocket-server [server-type]
   (let [conn (adapter/ws-init! server-type)
-        bidi-routes (handler/create-bidi-routes conn)
         router (router/start-router! conn)
         watch (watch/watch-conn-start conn)]
     {:conn conn
-     :bidi-routes bidi-routes
      :router router
      :watch watch}))
 

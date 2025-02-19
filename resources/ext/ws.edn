@@ -3,8 +3,7 @@
  :lazy false
  :cljs-namespace [modular.ws.core
                   modular.ws.msg-handler
-                  modular.ws.wsconfig
-                  ]
+                  modular.ws.wsconfig]
  :cljs-ns-bindings {'modular.ws.core {'send! modular.ws.core/send!
                                       'start-websocket-client! modular.ws.core/start-websocket-client!}
                     'modular.ws.msg-handler {'-event-msg-handler modular.ws.msg-handler/-event-msg-handler
@@ -15,4 +14,13 @@
  :cljs-service {:config-fn modular.ws.wsconfig/config-ws
                 :start-fn modular.ws.wsconfig/start-ws-service}
  
+ :web/routes [["/api/token" {:handler modular.ws.service.handler/ws-token-handler-raw
+                             :middleware [modular.ws.service.middleware/wrap-ws]}]
+              ["/api/chsk" {:get modular.ws.service.handler/ws-handshake-handler
+                            :post modular.ws.service.handler/ws-ajax-post-handler
+                            :middleware [webserver.middleware.ctx/ctx-middleware
+                                         modular.ws.service.middleware/wrap-ws]
+                            :services #{:sente}}]]
+ 
  }
+

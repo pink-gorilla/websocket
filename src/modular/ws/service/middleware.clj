@@ -9,7 +9,7 @@
    [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
    [ring.middleware.session :refer [wrap-session]]
   ; [muuntaja.middleware :refer [wrap-format]] ; 30x faster than ring.middleware.format
-   [modular.webserver.middleware.api :as api]))
+   [webserver.middleware.api :as api]))
 
 #_(defn wrap-formats2 [handler]
     (let [wrapped (-> handler wrap-params (wrap-format formats/instance))]
