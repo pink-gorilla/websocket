@@ -15,7 +15,9 @@
 
 (defn ws-init! [server-type]
   (let [get-sch-adapter (get-adapter server-type)
-        packer (sente-transit/get-transit-packer :json e/encode e/decode)
+        encode (e/write-opts)
+        decode (e/read-opts)
+        packer (sente-transit/get-transit-packer :json encode decode)
         chsk-server (sente/make-channel-socket-server!
                      (get-sch-adapter)
                      {:packer packer

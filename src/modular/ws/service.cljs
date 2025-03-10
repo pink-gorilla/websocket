@@ -14,7 +14,9 @@
 
 (defn ws-init! [protocol path port]
   (debug "connecting sente websocket.. " protocol path port)
-  (let [packer (sente-transit/get-transit-packer :json e/encode e/decode)
+  (let [encode (e/write-opts)
+        decode (e/read-opts)
+        packer (sente-transit/get-transit-packer :json encode decode)
         opts {:type :auto  ; :ajax
               :ws-kalive-ms 7000
               :ws-ping-timeout-ms 30000
