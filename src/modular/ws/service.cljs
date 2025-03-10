@@ -3,7 +3,7 @@
    [taoensso.timbre :as timbre :refer-macros [debug   warn]]
    [taoensso.sente :as sente]
    [taoensso.sente.packers.transit :as sente-transit] ;; Optional, for Transit encoding
-   [modular.encoding.transit :as e]
+   [transit.io :as e]
    [modular.ws.msg-handler :refer [event-msg-handler]]))
 
 ;; see: https://github.com/ptaoussanis/sente/blob/master/example-project/src/example/client.cljs

@@ -2,7 +2,7 @@
   (:require
    [taoensso.sente.packers.transit :as sente-transit]
    [taoensso.sente  :as sente]
-   [modular.encoding.transit :as e]
+   [transit.io :as e]
    [modular.ws.service.id :refer [get-sente-session-uid]]))
 
 (defn get-adapter [server-type]
