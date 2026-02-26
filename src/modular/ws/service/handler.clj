@@ -28,7 +28,7 @@
         conn (get-conn req)
         {:keys [ring-ajax-get-or-ws-handshake]} conn
         res (ring-ajax-get-or-ws-handshake req)]
-    (infof "ws-chsk client-id: %s uid: %s csrf: %s"
+    (infof "ws-chsk csrf: %s"
            (get-in req [:session :ring.middleware.anti-forgery/anti-forgery-token]))
     (debug res)
     res))
