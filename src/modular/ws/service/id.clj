@@ -18,8 +18,8 @@
   (or (session-uid req)
       (unique-id)))
 
-(defn sente-session-with-uid [req]
-  (let [session (or (:session req) {})
-        uid (or (get-sente-session-uid req)
-                (unique-id))]
-    (assoc session :uid uid)))
+(defn sente-user-id-fn [req]
+  (or (get-in req [:identity :user] req) "anonymous"))
+
+
+;(assoc session :uid uid)

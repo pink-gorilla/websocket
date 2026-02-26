@@ -1,13 +1,16 @@
 (ns modular.ws.core
   (:require
-   [taoensso.timbre :refer-macros [info error]]
+   [taoensso.timbre :refer-macros [info warn error]]
    [re-frame.core :as rf]
    [modular.ws.service :as service]
    [modular.ws.ws :as ws]))
 
 (defonce state (atom nil))
 
+(defonce settings-a (atom {}))
+
 (defn start-websocket-client! [protocol path port]
+  (reset! settings-a {:protocol protocol :path path :port port})
   (let [s (service/start-websocket-client! protocol path port)]
     (reset! state s)
     s))
@@ -16,6 +19,13 @@
   (service/stop-websocket-client! state)
   (reset! state nil)
   nil)
+
+(defn restart-websocket-client! []
+  (warn "restarting websocket client ...")
+  (let [{:keys [protocol path port]} @settings-a]
+    (stop-websocket-client! @state)
+    (start-websocket-client! protocol path port))
+  (warn "restarting websocket client finished!"))
 
 (defn send!
   ([data]

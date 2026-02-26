@@ -46,7 +46,10 @@
                detected-port)]
     (if port
       (do (info "connecting websocket protocol: " protocol "route: " route " port: " port)
-          (start-websocket-client! protocol route port))
+          (start-websocket-client! protocol route port)
+          
+          
+          )
       (error "WEBSOCKET cannot connect. port nil! webly-http-port: " webly-http-port " shadow-port: " shadow-dev-http-port))))
 
 (def ws-open-p (p/deferred))

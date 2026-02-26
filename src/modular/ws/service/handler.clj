@@ -1,9 +1,8 @@
 (ns modular.ws.service.handler
   (:require
-   [taoensso.timbre :refer [debug debugf info infof]]
+   [taoensso.timbre :refer [debug debugf info infof warn]]
    [cheshire.core :as json]
-   [ring.middleware.anti-forgery :refer [*anti-forgery-token*]]
-   [modular.ws.service.id :refer [get-sente-session-uid]]))
+   [ring.middleware.anti-forgery :refer [*anti-forgery-token*]]))
 
 ; CSRF TOKEN
 
@@ -23,15 +22,13 @@
 (defn get-conn [{:keys [ctx] :as _req}]
   (get-in ctx [:sente :conn]))
 
-(defn ws-handshake-handler [req]
+(defn ws-handshake-handler [{:keys [identity] :as req}]
   (debugf "ws/chsk GET: %s" req)
-  (let [conn (get-conn req)
+  (let [;_ (warn "ws identity: " identity)
+        conn (get-conn req)
         {:keys [ring-ajax-get-or-ws-handshake]} conn
-        client-id  (get-in req [:params :client-id]) ; check if sente requirements are met
-        uid (get-sente-session-uid req)
         res (ring-ajax-get-or-ws-handshake req)]
     (infof "ws-chsk client-id: %s uid: %s csrf: %s"
-           client-id uid
            (get-in req [:session :ring.middleware.anti-forgery/anti-forgery-token]))
     (debug res)
     res))

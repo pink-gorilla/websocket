@@ -3,7 +3,7 @@
    [taoensso.sente.packers.transit :as sente-transit]
    [taoensso.sente  :as sente]
    [transit.io :as e]
-   [modular.ws.service.id :refer [get-sente-session-uid]]))
+   [modular.ws.service.id :refer [sente-user-id-fn]]))
 
 (defn get-adapter [server-type]
   (let [s (case server-type
@@ -24,7 +24,7 @@
                       :ws-kalive-ms 15000
                       :ws-ping-timeout-ms 50000
                       :csrf-token-fn nil ; awb99; disable CSRF checking.
-                      :user-id-fn get-sente-session-uid})
+                      :user-id-fn sente-user-id-fn})
         {:keys [ch-recv send-fn connected-uids
                 ajax-post-fn ajax-get-or-ws-handshake-fn]} chsk-server]
     {:chsk-send! send-fn

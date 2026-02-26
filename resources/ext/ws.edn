@@ -18,9 +18,12 @@
                              :middleware [modular.ws.service.middleware/wrap-ws]}]
               ["/api/chsk" {:get modular.ws.service.handler/ws-handshake-handler
                             :post modular.ws.service.handler/ws-ajax-post-handler
-                            :middleware [webserver.middleware.ctx/ctx-middleware
+                            :middleware [ring.middleware.cookies/wrap-cookies
+                                         muuntaja.middleware/wrap-format
+                                         token.identity.local/identity-middleware
+                                         webserver.middleware.ctx/ctx-middleware 
                                          modular.ws.service.middleware/wrap-ws]
-                            :services #{:sente}}]]
+                            :services #{:sente :token}}]]
  
  }
 
