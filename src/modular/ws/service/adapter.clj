@@ -2,8 +2,7 @@
   (:require
    [taoensso.sente.packers.transit :as sente-transit]
    [taoensso.sente  :as sente]
-   [transit.io :as e]
-   [modular.ws.service.id :refer [sente-user-id-fn]]))
+   [transit.io :as e]))
 
 (defn get-adapter [server-type]
   (let [s (case server-type
@@ -12,6 +11,9 @@
             :httpkit 'taoensso.sente.server-adapters.http-kit/get-sch-adapter)
         get-sch-adapter (requiring-resolve s)]
     get-sch-adapter))
+
+(defn sente-user-id-fn [req]
+  (or (get-in req [:identity :user] req) "anonymous"))
 
 (defn ws-init! [server-type]
   (let [get-sch-adapter (get-adapter server-type)
