@@ -1,6 +1,6 @@
 (ns modular.ws.service.handler
   (:require
-   [taoensso.timbre :refer [debug debugf info infof warn]]
+   [taoensso.timbre :refer [debug debugf info infof warn error]]
    [cheshire.core :as json]
    [ring.middleware.anti-forgery :refer [*anti-forgery-token*]]))
 
@@ -23,11 +23,13 @@
   (get-in ctx [:sente :conn]))
 
 (defn ws-handshake-handler [req] 
-  (let [conn (get-conn req)
-        {:keys [ring-ajax-get-or-ws-handshake]} conn
-        res (ring-ajax-get-or-ws-handshake req)]
-    (info "ws-chsk csrf: anti-forgery-token: " (get-in req [:session :ring.middleware.anti-forgery/anti-forgery-token])) 
-    res))
+  (if-let [conn (get-conn req)]
+    (let [{:keys [ring-ajax-get-or-ws-handshake]} conn
+          res (ring-ajax-get-or-ws-handshake req)]
+      (info "ws-chsk csrf: anti-forgery-token: " (get-in req [:session :ring.middleware.anti-forgery/anti-forgery-token])) 
+      res
+      )
+    (error "sente ws-handshake error. you need to set :sente in the context")))
 
 (defn ws-ajax-post-handler [req]
     (info "/chsk post")

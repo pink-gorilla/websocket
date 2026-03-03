@@ -1,6 +1,6 @@
 (ns modular.ws.msg-handler
   (:require
-   [taoensso.timbre :refer [debugf  infof   error errorf]]))
+   [taoensso.timbre :refer [debug info error]]))
 
 (defn ws-reply [{:keys [_event _id _?data _ring-req ?reply-fn _send-fn] :as _req}
                 res]
@@ -31,41 +31,41 @@
 
 (defmethod -event-msg-handler :chsk/uidport-open
   [{:as _msg :keys [event _id _?data _ring-req _?reply-fn _send-fn]}]
-  (infof ":chsk/uidport-open: %s" event))
+  (info ":chsk/uidport-open: " event))
 
 (defmethod -event-msg-handler :chsk/uidport-close
   [{:as _msg :keys [event _id _?data _ring-req _?reply-fn _send-fn]}]
-  (infof ":chsk/uidport-close: %s" event))
+  (info ":chsk/uidport-close: " event))
 
 (defmethod -event-msg-handler :chsk/ws-ping
   [{:as _msg :keys [event _id _?data _ring-req ?reply-fn _send-fn]}]
-  (debugf ":chsk/ws-ping: %s" event)
+  (debug ":chsk/ws-ping: " event)
   (when ?reply-fn
     (?reply-fn {:unmatched-event-as-echoed-from-server event})))
 
 (defmethod -event-msg-handler :chsk/ws-pong
   [{:as _msg :keys [event _id _?data _ring-req ?reply-fn _send-fn]}]
-  (debugf ":chsk/ws-pong: %s" event)
+  (debug ":chsk/ws-pong: " event)
   (when ?reply-fn
     (?reply-fn {:unmatched-event-as-echoed-from-server event})))
 
 (defmethod -event-msg-handler :chsk/bad-package
   [{:as _msg :keys [event _id _?data _ring-req _?reply-fn _send-fn]}]
-  (infof ":chsk/bad-package: %s" event))
+  (info ":chsk/bad-package: " event))
 
 (defmethod -event-msg-handler :chsk/bad-event
   [{:as _msg :keys [event _id _?data _ring-req _?reply-fn _send-fn]}]
-  (infof ":chsk/bad-event: %s" event))
+  (info ":chsk/bad-event: " event))
 
 (defmethod -event-msg-handler :default
   [{:keys [event id _?data ring-req _?reply-fn _send-fn] :as msg}]
   (let [session (:session ring-req)
         _uid (:uid session)]
-    (errorf "received websocket message of unknown type: %s event: %s" id event)
+    (error "received websocket message of unknown type: " id "event:" event)
     (send-response msg :ws/unknown event)))
 
 (defn event-msg-handler [{:keys [_client-id id event ?data _uid] :as msg}]
-  (debugf "ws rcvd: evt: %s id: %s data: %s" event id ?data)
+  (debug "ws rcvd: evt: " event " id:" id " data: " ?data)
   (when msg
     (-event-msg-handler msg)))
 

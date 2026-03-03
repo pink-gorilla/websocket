@@ -1,5 +1,6 @@
 (ns modular.ws.service.adapter
   (:require
+   [taoensso.timbre :refer [debug info error]]
    [taoensso.sente.packers.transit :as sente-transit]
    [taoensso.sente  :as sente]
    [transit.io :as e]))
@@ -13,7 +14,11 @@
     get-sch-adapter))
 
 (defn sente-user-id-fn [req]
-  (or (get-in req [:identity :user] req) "anonymous"))
+  (let [identity (get req :identity)
+        _ (info "sente-user-id identity: " identity)
+        user (get identity :user)
+        _ (info "sente-user-id user: " user)]
+    (or user "anonymous")))
 
 (defn ws-init! [server-type]
   (let [get-sch-adapter (get-adapter server-type)
