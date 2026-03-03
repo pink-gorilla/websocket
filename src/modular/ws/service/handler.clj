@@ -22,13 +22,11 @@
 (defn get-conn [{:keys [ctx] :as _req}]
   (get-in ctx [:sente :conn]))
 
-(defn ws-handshake-handler [{:keys [identity] :as req}] 
-  (let [;_ (warn "ws identity: " identity)
-        conn (get-conn req)
+(defn ws-handshake-handler [req] 
+  (let [conn (get-conn req)
         {:keys [ring-ajax-get-or-ws-handshake]} conn
         res (ring-ajax-get-or-ws-handshake req)]
-    (infof "ws-chsk csrf: %s"
-           (get-in req [:session :ring.middleware.anti-forgery/anti-forgery-token])) 
+    (info "ws-chsk csrf: anti-forgery-token: " (get-in req [:session :ring.middleware.anti-forgery/anti-forgery-token])) 
     res))
 
 (defn ws-ajax-post-handler [req]
