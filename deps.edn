@@ -7,7 +7,7 @@
         org.pinkgorilla/transit-ajax {:mvn/version "0.1.11"} ; encoding
         org.pinkgorilla/webserver {:mvn/version "0.2.70"}
         ;org.pinkgorilla/webserver {:local/root "../webserver" :deps/manifest :deps}
-        org.pinkgorilla/oauth2 {:mvn/version "0.3.54"}
+        org.pinkgorilla/token {:mvn/version "0.4.63"}
         }
 
  :aliases
