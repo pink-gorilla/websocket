@@ -28,7 +28,7 @@
   (let [protocol (if (is-https?)
                    :https
                    :http)
-        route "/api/chsk"
+        route "/sente/chsk"
         detected-port (server-port)
         port (cond
                ; https always on 443

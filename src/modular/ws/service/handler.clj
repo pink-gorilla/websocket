@@ -32,7 +32,7 @@
     (error "sente ws-handshake error. you need to set :sente in the context")))
 
 (defn ws-ajax-post-handler [req]
-    (info "/chsk post")
+  (info "/chsk post")
   (let [conn (get-conn req)
         {:keys [ring-ajax-post]} conn
         res (ring-ajax-post req)]

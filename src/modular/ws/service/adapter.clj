@@ -18,7 +18,9 @@
         _ (info "sente-user-id identity: " identity)
         user (get identity :user)
         _ (info "sente-user-id user: " user)]
-    (or user "anonymous")))
+    ;(or user "anonymous")
+    identity
+    ))
 
 (defn ws-init! [server-type]
   (let [get-sch-adapter (get-adapter server-type)

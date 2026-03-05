@@ -1,4 +1,4 @@
-{:name "modular.ws"
+{:name "websocket-sente"
  ; build
  :lazy false
  :cljs-namespace [modular.ws.core
@@ -14,16 +14,17 @@
  :cljs-service {:config-fn modular.ws.wsconfig/config-ws
                 :start-fn modular.ws.wsconfig/start-ws-service}
  
- :web/routes [["/api/token" {:handler modular.ws.service.handler/ws-token-handler-raw
-                             :middleware [modular.ws.service.middleware/wrap-ws]}]
-              ["/api/chsk" {:get modular.ws.service.handler/ws-handshake-handler
-                            :post modular.ws.service.handler/ws-ajax-post-handler
-                            :middleware [ring.middleware.cookies/wrap-cookies
-                                         muuntaja.middleware/wrap-format
-                                         token.identity.local/identity-middleware
-                                         webserver.middleware.ctx/ctx-middleware 
-                                         modular.ws.service.middleware/wrap-ws]
-                            :services #{:sente :token}}]]
- 
+ :web/routes [["/sente"
+               ["/chsk" {:get modular.ws.service.handler/ws-handshake-handler
+                         :post modular.ws.service.handler/ws-ajax-post-handler
+                         :middleware [ring.middleware.cookies/wrap-cookies
+                                      muuntaja.middleware/wrap-format
+                                      token.identity.local/identity-middleware
+                                      webserver.middleware.ctx/ctx-middleware
+                                      modular.ws.service.middleware/wrap-ws]
+                         :services #{:sente :token}}] 
+               ["/token" {:handler modular.ws.service.handler/ws-token-handler-raw
+                          :middleware [modular.ws.service.middleware/wrap-ws]}]]]
+ ;
  }
 
